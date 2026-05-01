@@ -1,15 +1,13 @@
 import { NextResponse } from "next/server";
 
 export function middleware(req) {
-  const url = req.nextUrl;
-  const host = req.headers.get("host");
+  const host = req.headers.get("host") || "";
 
-  // اگر از ساب‌دامین api اومد → برو relay
-  if (host?.startsWith("api.")) {
-    url.pathname = "/api/index";
-    return NextResponse.rewrite(url);
+  if (host.startsWith("api.")) {
+    return NextResponse.rewrite(
+      new URL("/api/index", req.url)
+    );
   }
 
-  // در غیر این صورت → سایت
   return NextResponse.next();
 }
